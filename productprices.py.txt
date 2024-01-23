@@ -1,0 +1,65 @@
+# Define product prices
+product_prices = {'A': 20, 'B': 40, 'C': 50}
+
+# User inputs for quantities and gift wrappers
+quantities = {product: int(input(f"How many Quantity of \"Product {product}\" You Want? \n")) for product in product_prices}
+gift_wrappers = {product: int(input(f"How many \"Product {product}\" with Gift Wrappers You Want? \n")) for product in product_prices}
+
+# Display Bill
+separator_line = "_____________"
+
+# Display product table
+print("Product Name - Quantity - Total Amount")
+print(separator_line)
+
+total_amount = 0
+for product, price in product_prices.items():
+    quantity = quantities[product]
+    total_product_amount = quantity * price
+    print(f"Product {product} - {quantity} - ${total_product_amount}")
+    total_amount += total_product_amount
+
+# Calculate Subtotal
+print(separator_line)
+print("Total : $", total_amount)
+
+# Apply Discounts
+discounts = {}
+
+if total_amount > 200:
+    discounts["flat_10_discount"] = 10
+
+for product in product_prices:
+    if quantities[product] > 10:
+        discounts["bulk_5_discount"] = sum(0.05 * (quantities[prod] * product_prices[prod]) for prod in product_prices)
+
+if sum(quantities.values()) > 20:
+    discounts["bulk_10_discount"] = 0.1 * total_amount
+
+if sum(quantities.values()) > 30:
+    tiered_discount = sum(0.5 * ((quantities[prod] - 15) * product_prices[prod]) for prod in product_prices if quantities[prod] > 15)
+    discounts["tiered_50_discount"] = tiered_discount
+
+# Determine Beneficial Discount
+max_discount = max(discounts.values())
+discount_name = [key for key, value in discounts.items() if value == max_discount][0]
+
+# Display Beneficial Discount
+print(separator_line)
+print("Discount Applied :", discount_name)
+print("Discount Amount : $", max_discount)
+
+# Calculate Shipping Fee
+shipping_items = sum(quantities.values())
+shipping_fee = int((shipping_items / 10) * 5)
+print('Shipping Fee : $', shipping_fee)
+
+# Calculate Gift Wrapper Fee
+gift_wrapper_fee = sum(gift_wrappers.values())
+print('Gift Wrapper Fee: $', gift_wrapper_fee)
+
+# Calculate Total Cost
+total_cost = total_amount - max_discount + shipping_fee + gift_wrapper_fee
+print(separator_line)
+print("Total : $", total_cost)
+print(separator_line)
